@@ -1,0 +1,5 @@
+## 托管依赖 (构建时由组件管理器从 components.espressif.com 拉取)
+dependencies:
+  idf: ">=5.4"
+  espressif/esp_lvgl_port: "^2"
+  lvgl/lvgl: "~9.3.0"

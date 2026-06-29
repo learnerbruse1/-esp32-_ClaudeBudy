@@ -1,0 +1,44 @@
+# ESP32-WROVER-B settings for XRS Gomoku (五子棋)
+# Flash: 4MB, PSRAM: 8MB (Octal)
+
+# Partition table - single factory app, no OTA
+CONFIG_PARTITION_TABLE_SINGLE_APP=y
+
+# SPI RAM (PSRAM) — WROVER-B has 8MB Octal PSRAM
+CONFIG_SPIRAM=y
+CONFIG_SPIRAM_MODE_OCT=y
+CONFIG_SPIRAM_SPEED_80M=y
+CONFIG_SPIRAM_BOOT_INIT=y
+
+# Flash size: 4MB
+CONFIG_ESPTOOLPY_FLASHSIZE_4MB=y
+
+# Flash SPI mode: DIO (safe default)
+CONFIG_ESPTOOLPY_FLASHMODE_DIO=y
+
+# Flash frequency: 40MHz (safe default)
+CONFIG_ESPTOOLPY_FLASHFREQ_40M=y
+
+# CPU frequency: 240MHz (max for ESP32)
+CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ_240=y
+
+# FreeRTOS tick rate: 1000Hz (needed for smooth LVGL timers)
+CONFIG_FREERTOS_HZ=1000
+
+# Main task stack size: 8KB
+CONFIG_ESP_MAIN_TASK_STACK_SIZE=8192
+
+# Compiler optimization: performance (-O2)
+CONFIG_COMPILER_OPTIMIZATION_PERF=y
+
+# IRAM optimization — keep critical code in IRAM for speed
+CONFIG_SPIRAM_FETCH_INSTRUCTIONS=y
+CONFIG_SPIRAM_RODATA=y
+
+# Increase event loop task stack for LVGL
+CONFIG_ESP_SYSTEM_EVENT_TASK_STACK_SIZE=4096
+
+# Disable WiFi/Bluetooth (not needed for Gomoku)
+CONFIG_ESP_WIFI_ENABLED=n
+CONFIG_ESP_WIFI_REMOTE_ENABLED=n
+CONFIG_BT_ENABLED=n

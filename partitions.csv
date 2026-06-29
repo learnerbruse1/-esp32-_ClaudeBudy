@@ -1,0 +1,16 @@
+# ================================================================
+# 简化分区表 — 4MB Flash (纯 Claude Buddy，无游戏机)
+#
+# 布局:
+#   0x000000  bootloader
+#   0x008000  分区表
+#   0x009000  nvs        (Wi-Fi PHY 校准等)
+#   0x00f000  phy_init
+#   0x010000  factory    = Claude 伙伴 + 投屏 + 工具箱 + 设置
+#   0x3D0000  cfg        = Claude Buddy 配置
+# ================================================================
+# Name,       Type, SubType,  Offset,    Size,      Flags
+nvs,          data, nvs,      0x9000,    0x4000,
+phy_init,     data, phy,      0xf000,    0x1000,
+factory,      app,  factory,  0x10000,   0x3C0000,
+cfg,          data, nvs,      0x3D0000,  0x30000,

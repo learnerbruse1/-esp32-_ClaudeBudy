@@ -1,0 +1,36 @@
+idf_component_register(
+    SRCS
+        "main.c"
+        "board.c"
+        "font_cn_16.c"
+        "config.c"
+        "claude_api.c"
+        "app_menu.c"
+        "app_claude.c"
+        "app_settings.c"
+        "app_tools.c"
+        "app_cast.c"
+        "web_portal.c"
+        "sdcard.c"
+        "ui_common.c"
+    INCLUDE_DIRS "."
+    REQUIRES
+        esp_lvgl_port
+        esp_lcd
+        driver
+        nvs_flash
+        esp_wifi
+        esp_http_client
+        esp_http_server
+        esp-tls
+        json
+        app_update
+        esp_netif
+        esp_event
+        fatfs
+        sdmmc
+        esp_driver_sdspi
+        esp_hw_support
+        spi_flash
+        esp_app_format
+)
