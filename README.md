@@ -1,5 +1,8 @@
 # 学而思小喵掌机 · Claude Buddy 系统
 
+[![zh-CN](https://img.shields.io/badge/lang-简体中文-red.svg)](README.md)
+[![en](https://img.shields.io/badge/lang-English-blue.svg)](README_EN.md)
+
 把学而思「小喵」编程掌机（ESP32）刷成一个**开机带菜单**的 Claude AI 助手。
 
 ```
