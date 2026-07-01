@@ -19,9 +19,15 @@ python tools\assemble_image.py
 python tools\flash_all.py
 ```
 
-Flash a pre-built image: double-click `一键刷机.bat` (defaults to COM8), or `python tools\flash_all.py COM5` for a different port.
+Flash a pre-built image: double-click `一键刷机.bat` (auto-detects CP210x/CH340 COM port, falls back to COM8), or `一键刷机.bat COM5` for a specific port.
 
 The flash flow: `assemble_image.py` stitches bootloader (0x1000) + partition table (0x8000) + app binary (0x10000) into a 4MB unified image (gaps filled with 0xFF), then `flash_all.py` writes it at 0x0 via esptool (460800 baud).
+
+### Encoding strategy
+
+- `一键刷机.bat`: Pure ASCII content — immune to GBK/UTF-8 encoding conflicts that cause the window to crash on open.
+- `flash_all.py` / `assemble_image.py`: Auto-detect terminal UTF-8 support at startup via `chcp 65001`. If UTF-8 works → Chinese output (box-drawing chars + emoji). If it fails → ASCII English fallback. No garbled output on any Windows terminal.
+- All user-facing strings use `_t(chinese, english)` for bilingual support.
 
 ## Architecture
 

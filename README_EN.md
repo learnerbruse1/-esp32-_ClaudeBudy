@@ -92,8 +92,10 @@ xiaomiao_buddy/
 
 ## 5. Quick Start (with pre-built flash_unified.bin)
 
-Connect the device to your computer via USB, then **double-click `一键刷机.bat`** (defaults to COM8; for other ports: `python tools\flash_all.py COM5`).
+Connect the device to your computer via USB, then **double-click `一键刷机.bat`** (defaults to COM8; for other ports: `一键刷机.bat COM5`).
 Takes about 1 minute — the device reboots into the main menu automatically.
+
+> The flash scripts auto-detect terminal encoding: Chinese UI when UTF-8 is available, or automatic English fallback — no garbled output.
 
 ---
 
@@ -142,9 +144,15 @@ Main menu → **Screen Cast** → connects WiFi → the screen shows a URL like 
 
 | Script | Purpose |
 |---|---|
-| `一键刷机.bat` → `tools/flash_all.py` | Assemble (if needed) + flash firmware to COM port |
-| `tools/assemble_image.py` | Stitch build artifacts into a 4MB unified image |
-| `tools/gen_symbols.py` | Generate GB2312 character set (for font regeneration) |
+| `一键刷机.bat` | Entry-point launcher (pure ASCII, no encoding issues): auto-checks Python/esptool → assembles image if needed → invokes flasher. Supports `一键刷机.bat COM5` to specify port. |
+| `tools/flash_all.py` | Flasher: detects terminal encoding (Chinese/English fallback), lists available COM ports, runs esptool, outputs troubleshooting guide on failure. |
+| `tools/assemble_image.py` | Stitches build artifacts into a 4MB unified image with a progress bar. Also supports Chinese/English auto-switching. |
+| `tools/gen_symbols.py` | Generates GB2312 character set (for font regeneration). |
+
+### Encoding Compatibility
+
+- `一键刷机.bat`: Pure ASCII content — eliminates GBK/UTF-8 parsing conflicts that cause flash-quits.
+- `flash_all.py` / `assemble_image.py`: Auto-detect UTF-8 support on startup via `chcp 65001`; fall back to English if unavailable. No garbled output on any terminal.
 
 ---
 
@@ -161,7 +169,9 @@ python -m esptool --chip esp32 -p COM8 write-flash 0x0 backup_current_4MB.bin
 
 ## 12. Troubleshooting
 
-- **Can't connect to COM8**: Try a different port (`python tools\flash_all.py COM5`). The bridge supports auto-reset — no button press needed in most cases.
+- **Flash tool crashes on open**: Fixed (v2.0+ — bat file is now pure ASCII, eliminating encoding conflicts). If it still happens, run as Administrator or execute from cmd.exe to see the error message.
+- **Can't connect to COM port**: The script auto-detects CP210x/CH340 devices. If not found, check the USB cable is a data cable (not charge-only), or find the correct COM port in Device Manager and run `一键刷机.bat COM5`.
+- **Garbled script output**: Python scripts auto-detect UTF-8 terminal support and fall back to English if unavailable. If issues persist, run `chcp 65001` in the terminal first.
 - **Won't enter main menu**: Power off and on again (cold boot always enters the menu first).
 - **SD Card Error / mount failed**: Card is not FAT32 → Settings → Format SD Card.
 - **Network failure**: ESP32 only supports **2.4GHz** WiFi. Relay endpoints must support the `/v1/messages` path.

@@ -92,8 +92,10 @@ xiaomiao_buddy/
 
 ## 五、快速开始（已有 flash_unified.bin）
 
-掌机用 USB 连电脑，**双击 `一键刷机.bat`**（默认 COM8；其它口：命令行 `python tools\flash_all.py COM5`）。
+掌机用 USB 连电脑，**双击 `一键刷机.bat`**（默认 COM8；其它口：命令行 `一键刷机.bat COM5`）。
 约 1 分钟，自动重启进入主菜单。
+
+> 刷机脚本会自动检测终端编码能力：UTF-8 可用时输出中文界面，不可用时自动切换英文，不会出现乱码。
 
 ---
 
@@ -142,9 +144,15 @@ python tools\flash_all.py
 
 | 脚本 | 作用 |
 |---|---|
-| `一键刷机.bat` → `tools/flash_all.py` | 拼装(若需要)+烧录系统到 COM 口 |
-| `tools/assemble_image.py` | 把 build 产物拼成 4MB 镜像 |
-| `tools/gen_symbols.py` | 生成 GB2312 字符集(重做字体用) |
+| `一键刷机.bat` | 入口脚本（纯 ASCII，无编码兼容问题）：自动检查 Python/esptool 版本 → 按需拼装镜像 → 调用烧录。支持 `一键刷机.bat COM5` 指定端口。 |
+| `tools/flash_all.py` | 烧录工具：检测终端编码（UTF-8 中文 / 英文降级），列出可用 COM 口，执行 esptool 烧录，失败时输出排查指南。 |
+| `tools/assemble_image.py` | 把 build 产物拼成 4MB 统一镜像，带进度条。同样支持中英文自动切换。 |
+| `tools/gen_symbols.py` | 生成 GB2312 字符集（重做字体用） |
+
+### 编码兼容策略
+
+- `一键刷机.bat`：纯 ASCII 内容，杜绝 GBK/UTF-8 解析冲突导致闪退。
+- `flash_all.py` / `assemble_image.py`：启动时自动 `chcp 65001` 切换 UTF-8，失败则降级为英文输出，任何终端都不乱码。
 
 ---
 
@@ -161,7 +169,9 @@ python -m esptool --chip esp32 -p COM8 write-flash 0x0 backup_current_4MB.bin
 
 ## 十二、故障排查
 
-- **连不上 COM8**：换端口号（`python tools\flash_all.py COM5`）；本桥支持自动复位，一般无需按键。
+- **一键刷机闪退**：已修复（v2.0 起 bat 文件改为纯 ASCII，不再受编码冲突影响）。如仍闪退，请以管理员身份运行或在 cmd.exe 中手动执行查看错误。
+- **连不上 COM 口**：脚本会自动检测 CP210x/CH340 设备；若未检测到，请检查数据线是否为数据线（非仅充电线），或在设备管理器中确认端口号后手动指定 `一键刷机.bat COM5`。
+- **脚本输出乱码**：Python 脚本会自动检测终端 UTF-8 支持，不可用时切换英文。若仍有问题，在命令行中先执行 `chcp 65001` 再运行脚本。
 - **进不去主菜单**：关机再开机（冷启动总是先进菜单）。
 - **SD Card Error / mount failed**：卡不是 FAT32 → 设置→格式化TF卡。
 - **联网失败**：ESP32 只支持 **2.4GHz** Wi-Fi；中转地址要兼容 `/v1/messages`。
